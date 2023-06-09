@@ -1,4 +1,5 @@
 import {data} from './data.js';
+import { toMinEndSec } from './utils.js';
 
 console.log(data);
 
@@ -19,7 +20,8 @@ const AudioController = {
     loadAudioData(audio){
         const {id, link, genre, track, group, duration} = audio;
         const [image] = link.split('.');
-        console.log([image]);
+        console.log(duration);
+        console.log(toMinEndSec(duration));
 
         const item = ` <div class="item" data-id = ${id}>
                         <div class="item-image" style="background-image: url(./assets/images/${image}.jpg)"></div>
@@ -27,7 +29,7 @@ const AudioController = {
                             <h2 class="item-group">${group}</h2>
                             <h3 class="item-track">${track}</h3>
                         </div>
-                        <p class="item-duration">${duration}</p>
+                        <p class="item-duration">${toMinEndSec(duration)}</p>
                         <p class="item-genre">${genre}</p>
                         <button class="item-play">
                             <svg class="icon-play">
@@ -35,6 +37,7 @@ const AudioController = {
                             </svg>
                         </button>
                     </div>`
+        this.audioList.innerHTML += item;
     },
 
     renderAudios(){
