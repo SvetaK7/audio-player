@@ -24,6 +24,20 @@ const AudioController = {
         this.audioList.addEventListener('click', this.handleItem.bind(this))
     },
 
+    audioUpdateHandler({audio, duration}){
+        const progress = document.querySelector(".progress-current");
+        const timeline = document.querySelector('.timeline-start');
+
+        audio.addEventListener('timeupdate', ({target}) => {
+            const {currentTime} = target;
+            const width = (currentTime * 100) / duration;
+            console.log(width);
+
+            timeline.innerHTML = toMinEndSec(currentTime);
+            progress.style.width = `${width}%`;
+        })
+    },
+
     renderCurrentItem({link, track, group, year, duration}){
         const [image] = link.split('.');
             return `<div class="current-image" style="background-image: url(./assets/images/${image}.jpg);">
@@ -76,6 +90,8 @@ const AudioController = {
         if (!current) return
         this.state.current = current;
         this.currentItem.innerHTML = this.renderCurrentItem(current);
+
+        this.audioUpdateHandler(current);
     },
 
     handleItem({target}){
