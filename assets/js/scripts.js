@@ -16,28 +16,28 @@ const AudioController = {
     initVariables(){
         this.audioList = document.querySelector('.items')
     },
+    
+    renderItem({id, link, genre, track, group, duration}){
+        const [image] = link.split('.');
+
+        return  ` <div class="item" data-id = ${id}>
+                    <div class="item-image" style="background-image: url(./assets/images/${image}.jpg)"></div>
+                    <div class="item-titles">
+                        <h2 class="item-group">${group}</h2>
+                        <h3 class="item-track">${track}</h3>
+                    </div>
+                    <p class="item-duration">${toMinEndSec(duration)}</p>
+                    <p class="item-genre">${genre}</p>
+                    <button class="item-play">
+                        <svg class="icon-play">
+                            <use xlink:href="./assets/images/sprite.svg#play"></use>
+                        </svg>
+                    </button>
+                </div>`
+    },
 
     loadAudioData(audio){
-        const {id, link, genre, track, group, duration} = audio;
-        const [image] = link.split('.');
-        console.log(duration);
-        console.log(toMinEndSec(duration));
-
-        const item = ` <div class="item" data-id = ${id}>
-                        <div class="item-image" style="background-image: url(./assets/images/${image}.jpg)"></div>
-                        <div class="item-titles">
-                            <h2 class="item-group">${group}</h2>
-                            <h3 class="item-track">${track}</h3>
-                        </div>
-                        <p class="item-duration">${toMinEndSec(duration)}</p>
-                        <p class="item-genre">${genre}</p>
-                        <button class="item-play">
-                            <svg class="icon-play">
-                                <use xlink:href="./assets/images/sprite.svg#play"></use>
-                            </svg>
-                        </button>
-                    </div>`
-        this.audioList.innerHTML += item;
+        this.audioList.innerHTML += this.renderItem(audio);
     },
 
     renderAudios(){
