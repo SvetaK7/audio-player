@@ -5,3 +5,5 @@ export const toMinEndSec = (duration) => {
     const seconds = formatTime(Math.floor(duration - minutes*60));
     return `${minutes}:${seconds}`
 }
+
+export const shuffle = (array) => array.sort(() => 0.5 - Math.random());

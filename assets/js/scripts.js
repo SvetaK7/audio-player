@@ -1,5 +1,5 @@
 import {data} from './data.js';
-import { toMinEndSec } from './utils.js';
+import { shuffle, toMinEndSec } from './utils.js';
 
 console.log(data);
 
@@ -24,12 +24,23 @@ const AudioController = {
         this.currentItem = document.querySelector('.current');
         this.repeatButton = document.querySelector('.handling-repeat')
         this.volumeButton = document.querySelector('.controls-volume')
+        this.shuffleButton = document.querySelector('.handling-shuffle')
     },
 
     initEvents(){
         this.audioList.addEventListener('click', this.handleItem.bind(this));
         this.repeatButton.addEventListener('click', this.handleRepeat.bind(this));
-        this.volumeButton.addEventListener('click', this.handleVolume.bind(this))
+        this.volumeButton.addEventListener('click', this.handleVolume.bind(this));
+        this.shuffleButton.addEventListener('click', this.handleShuffle.bind(this))
+    },
+
+    handleShuffle(){
+        const { children } = this.audioList;
+
+        const shuffled = shuffle([...children]);
+  
+        this.audioList.innerHTML = "";
+        shuffled.forEach((item) => this.audioList.appendChild(item));
     },
 
     handleVolume({target: {value}}){
@@ -65,6 +76,7 @@ const AudioController = {
         const currentItem = document.querySelector(`[data-id="${current.id}"]`);
 
         const next = currentItem.nextElementSibling?.dataset;
+
         const first = this.audioList.firstElementChild?.dataset;
     
         const itemId = next?.id || first?.id;
