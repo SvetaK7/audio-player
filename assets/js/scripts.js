@@ -7,7 +7,9 @@ const AudioController = {
     state: {
         audios: [],
         current: {},
-        playing: false
+        playing: false,
+        repeating: false,
+        volume: 0.5,
     },
 
     init(){
@@ -19,11 +21,33 @@ const AudioController = {
     initVariables(){
         this.playButton = null;
         this.audioList = document.querySelector('.items');
-        this.currentItem = document.querySelector('.current') 
+        this.currentItem = document.querySelector('.current');
+        this.repeatButton = document.querySelector('.handling-repeat')
+        this.volumeButton = document.querySelector('.controls-volume')
     },
 
     initEvents(){
-        this.audioList.addEventListener('click', this.handleItem.bind(this))
+        this.audioList.addEventListener('click', this.handleItem.bind(this));
+        this.repeatButton.addEventListener('click', this.handleRepeat.bind(this));
+        this.volumeButton.addEventListener('click', this.handleVolume.bind(this))
+    },
+
+    handleVolume({target: {value}}){
+        const {current} = this.state;
+
+        this.state.volume = value;
+
+        if (!current.audio) return;
+
+        current.audio.volume = value;
+        console.log(current);
+    },
+
+    handleRepeat({currentTarget}){
+        const {repeating} = this.state;
+        currentTarget.classList.toggle('active', !repeating);
+
+        this.state.repeating = !repeating;
     },
 
     handleAudioPlay(){
@@ -87,7 +111,15 @@ const AudioController = {
 
             timeline.innerHTML = toMinEndSec(currentTime);
             progress.style.width = `${width}%`;
+        });
+
+        audio.addEventListener('ended', ({target}) => {
+            target.currentTime = 0;
+            progress.style.width = `0%`;
+
+            this.state.repeating ? target.play() : this.handleNext();
         })
+
     },
 
     renderCurrentItem({link, track, group, year, duration}){
@@ -160,6 +192,8 @@ const AudioController = {
 
         this.state.current = current;
         this.currentItem.innerHTML = this.renderCurrentItem(current);
+
+        current.audio.volume =this.state.volume;
 
         this.handlePlayer();
         this.audioUpdateHandler(current);
